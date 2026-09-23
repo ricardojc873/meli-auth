@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Token - Mercado Livre</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #121212; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #1e1e1e; padding: 30px; border-radius: 10px; width: 450px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        h2 { color: #f1c40f; margin-top: 0; }
+        a.btn-auth { display: block; background: #f1c40f; color: #000; text-align: center; padding: 12px; text-decoration: none; font-weight: bold; border-radius: 5px; margin-bottom: 20px; }
+        a.btn-auth:hover { background: #d4ac0d; }
+        input { width: 100%; padding: 10px; margin-bottom: 15px; background: #2c2c2c; border: 1px solid #444; color: #fff; border-radius: 5px; box-sizing: border-box; }
+        button.btn-token { width: 100%; background: #2ecc71; color: #fff; border: none; padding: 12px; font-weight: bold; border-radius: 5px; cursor: pointer; }
+        button.btn-token:hover { background: #27ae60; }
+        pre { background: #111; padding: 15px; border-radius: 5px; overflow-x: auto; color: #2ecc71; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Painel do Token</h2>
+        
+        <a class="btn-auth" href="https://auth.mercadolibre.com.br/authorization?response_type=code&client_id=5408499095968669&redirect_uri=https://api-mercadolivre-nu.vercel.app">
+            1. Autorizar Conta no Mercado Livre
+        </a>
+
+        <label for="codeInput">Cole o Code / Refresh Token:</label>
+        <input type="text" id="codeInput" placeholder="Cole aqui o código TG-...">
+
+        <button class="btn-token" onclick="gerarToken()">2. Gerar Access Token</button>
+
+        <h3>Resposta:</h3>
+        <pre id="responseOutput">{ ... }</pre>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        if (code) {
+            document.getElementById('codeInput').value = code;
+        }
+
+        async function gerarToken() {
+            const tokenValue = document.getElementById('codeInput').value.trim();
+            const output = document.getElementById('responseOutput');
+
+            if (!tokenValue) {
+                output.textContent = "Erro: Insira um código ou refresh token válido.";
+                return;
+            }
+
+            output.textContent = "A processar...";
+
+            try {
+                const res = await fetch('/api/token', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ refresh_token: tokenValue })
+                });
+                const data = await res.json();
+                output.textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                output.textContent = "Erro de conexão: " + err.message;
+            }
+        }
+    </script>
+</body>
+</html>
