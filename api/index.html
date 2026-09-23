@@ -20,7 +20,6 @@
     <div class="card">
         <h2>Painel do Token</h2>
         
-        <!-- Botão de Autorização com o ID Novo -->
         <a class="btn-auth" href="https://auth.mercadolivre.com.br/authorization?response_type=code&client_id=5408499095968669&redirect_uri=https://api-mercadolivre-nu.vercel.app">
             1. Autorizar Conta no Mercado Livre
         </a>
@@ -35,7 +34,6 @@
     </div>
 
     <script>
-        // Captura automática do parâmetro 'code' retornado pelo Mercado Livre na URL
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
         if (code) {
